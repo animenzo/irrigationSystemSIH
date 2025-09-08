@@ -1,0 +1,115 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* 1. Green theme variables in HSL for easy Tailwind compatibility */
+
+@layer base {
+  :root {
+    --primary: 142 54% 36%;              /* #2E7D32 Green */
+    --primary-foreground: 0 0% 100%;     /* #fff */
+    --accent: 138 39% 56%;               /* #5CB85C Light Green */
+    --accent-foreground: 142 54% 36%;    /* same as primary */
+    --background: 154 43% 96%;           /* #EAF7F1 Soft Mint */
+    --foreground: 146 15% 15%;           /* #1B2B27 for strong text */
+    --warning: 32 98% 48%;               /* #F57C00 Orange */
+    --critical: 358 68% 48%;             /* #D32F2F Red */
+    --info: 213 74% 43%;                 /* #1976D2 Blue */
+    --radius: 0.625rem;
+
+    /* Additional chart or UI variables as needed */
+    --card: var(--background);
+    --card-foreground: var(--foreground);
+    --sidebar: var(--background);
+    --sidebar-foreground: var(--foreground);
+  }
+}
+
+.dark {
+  --primary: 142 54% 32%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 138 39% 50%;
+  --accent-foreground: 142 54% 36%;
+  --background: 154 43% 10%;
+  --foreground: 146 15% 85%;
+  /* Dark mode adjustments as needed */
+}
+
+/* 2. Tailwind base layer overrides using the new palette */
+
+@layer base {
+  * {
+    @apply border-[hsl(var(--primary))] outline-[hsl(var(--primary))]/30;
+  }
+  body {
+    @apply min-h-screen;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    transition: background-color 0.3s, color 0.3s;
+  }
+}
+
+/* 3. Headings, Buttons, Cards, etc. now use your color palette */
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold;
+  color: hsl(var(--primary));
+}
+
+button {
+  @apply px-4 py-2 rounded font-semibold;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  transition: background .2s;
+}
+button:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.card {
+  @apply rounded-lg shadow-md p-4;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+.loading {
+  @apply flex items-center justify-center min-h-screen;
+}
+
+.warning-text {
+  color: hsl(var(--warning));
+}
+
+.critical-text {
+  color: hsl(var(--critical));
+}
+
+.info-bg {
+  background-color: hsl(var(--info));
+  color: #fff;
+}
+
+/* 4. Use utility classes for arbitrary values in JSX as needed
+
+Example (JSX):
+<div className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]">
+  AgroSmart Dashboard
+</div>
+*/
+
+/* 5. Sidebar, popovers, charts can use these variables too */
+
+.sidebar {
+  background-color: hsl(var(--sidebar));
+  color: hsl(var(--sidebar-foreground));
+}
+
+/* 6. Radius utilities (optional) */
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* 7. Remove obsolete slate/gray/blue hardcoded classes in your JSX! */
