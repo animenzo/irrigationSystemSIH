@@ -17,8 +17,9 @@ export default function SideBarMenu({ isOpen, setIsOpen }) {
 
   // Navigation (with "to" for navigation, onClick for logout)
   const NAV = [
+    
     { icon: Home, label: "Dashboard", to: "/dashboard" },
-    { icon: Layers, label: "Farms", to: "/addFarm" },
+    { icon: Layers, label: "Farms", to: "/farms" },
     { icon: Droplets, label: "Irrigation", to: "/irrigation" },
     { icon: Thermometer, label: "Sensors", to: "/sensors" },
     { icon: CloudDrizzle, label: "Weather", to: "/weather" },
