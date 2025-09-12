@@ -7,14 +7,19 @@ const irrigationDataSchema = new mongoose.Schema({
         default: false
     },
     targetMoisture: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 100
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100
+    },
+    farmId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Farm',
+      required: true
     },
     timestamp: {
-        type: Date,
-        default: Date.now
+      type: Date,
+      default: Date.now
     }
 });
 

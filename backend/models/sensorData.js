@@ -6,7 +6,11 @@ const sensorDataSchema = new mongoose.Schema({
     ref: 'Farm',
     required: true
   },
-  moisture: {
+  moisture1: {
+    type: Number,
+    required: true
+  },
+  moisture2: {
     type: Number,
     required: true
   },
@@ -26,10 +30,26 @@ const sensorDataSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  // timestamp: {
-  //   type: Date,
-  //   default: Date.now
-  // }
+  isRain: {
+    type: Number,
+    default: 0
+  },
+  physicalBtn: {
+    type: Number,
+    default: 0
+  },
+  pumpControl: {
+    type: Number,
+    default: 0
+  },
+  targetMoisture: {
+    type: Number,
+    default: 30
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('SensorData', sensorDataSchema);

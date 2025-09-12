@@ -65,14 +65,24 @@ export const irrigationService = {
     }
   },
 
-  async controlPump(status, farmId, targetMoisture) {
+  async controlPump(action, farmId, targetMoisture) {
     try {
-      const response = await api.post('/pump', { status, farmId, targetMoisture });
+      const response = await api.post('/blynk/pump/control', { action, farmId, targetMoisture });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.error || 'Failed to control pump');
     }
-  }
+  },
+
+  async getStatus(farmId) {
+    try {
+      const response = await api.get(`/irrigation/status?farmId=${farmId}`);
+      return response.data.status;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || 'Failed to fetch irrigation status');
+    }
+  },
+
 };
 
 

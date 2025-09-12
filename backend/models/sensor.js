@@ -13,7 +13,7 @@ const sensorSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['moisture', 'temperature', 'humidity', 'tankLevel', 'pump'],
+    enum: ['moisture', 'temperature', 'humidity', 'tankLevel', 'pump', 'rain', 'button'],
     required: [true, 'Sensor type is required']
   },
   pin: {

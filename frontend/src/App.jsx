@@ -50,7 +50,7 @@ function Layout() {
         <Routes>
            <Route path="/" element={<Navigate to="/dashboard" replace />} />
           
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:farmId?" element={<Dashboard />} />
           <Route path="/farms" element={<Farms />} />
           <Route path="/addfarm" element={<AddFarm />} />
           <Route path="/farms/:id" element={<ViewDetails />} />
