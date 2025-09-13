@@ -56,11 +56,11 @@ export default function SideBarMenu({ isOpen, setIsOpen }) {
         animate={isOpen ? "open" : "closed"}
         variants={sidebarVariants}
         className="fixed z-40 top-0 left-0 h-full w-60 bg-white shadow-lg flex flex-col transition lg:static lg:block"
-        style={{ minHeight: "100vh" }}
+        style={{ minHeight: "110vh" }}
       >
         <div className="flex items-center justify-between p-5 border-b">
           <span className="text-xl font-bold text-[hsl(var(--primary))] flex items-center">
-            <CirclePlay className="mr-2 text-[hsl(var(--primary))]" size={24} />
+            <img src="/smartyFarm.svg" alt="logo" className="h-10 w-10" />
             AgroSmart
           </span>
           <button className="lg:hidden" onClick={() => setIsOpen(false)}>

@@ -20,6 +20,7 @@ import Sensors from "./pages/Sensors";
 import AddSensor from "./components/AddSensor";
 import SensorDetails from "./components/SensorDetails";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Home from "./pages/Home";
 
 function Layout() {
   const [sideOpen, setSideOpen] = useState(window.innerWidth >= 1024);
@@ -37,39 +38,48 @@ function Layout() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Optionally close sidebar on route change for mobile devices
   const location = useLocation();
   useEffect(() => {
-    setSideOpen(window.innerWidth >= 1024); 
+    setSideOpen(window.innerWidth >= 1024);
   }, [location]);
 
+  const isHomePage = location.pathname === "/";
+
+  if (isHomePage) {
+    // 👉 Home page should NOT have sidebar
+    return (
+      <main className="w-full">
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </main>
+    );
+  }
+
+  // 👉 All other pages (Dashboard layout)
   return (
     <div className="flex">
       <SideBarMenu isOpen={sideOpen} setIsOpen={setSideOpen} />
-      <main className={`flex-1 ${sideOpen ? 'ml-10' : ''} `}>
+      <main className={`flex-1 ${sideOpen ? "ml-1" : ""}`}>
         <Routes>
-           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          
           <Route path="/dashboard/:farmId?" element={<Dashboard />} />
           <Route path="/farms" element={<Farms />} />
           <Route path="/addfarm" element={<AddFarm />} />
           <Route path="/farms/:id" element={<ViewDetails />} />
-          <Route path="/weather" element={<Weather/>} />
-           <Route path="/schedules" element={<Schedules />} />
-            <Route path="/sensors" element={<Sensors />} />
-        <Route path="/sensors/add" element={<AddSensor />} />
-        <Route path="/sensors/:id" element={<SensorDetails />} />
+          <Route path="/weather" element={<Weather />} />
+          <Route path="/schedules" element={<Schedules />} />
+          <Route path="/sensors" element={<Sensors />} />
+          <Route path="/sensors/add" element={<AddSensor />} />
+          <Route path="/sensors/:id" element={<SensorDetails />} />
           <Route path="/schedules/create" element={<ScheduleCreate />} />
           <Route path="/schedules/edit/:id" element={<ScheduleEdit />} />
           <Route path="/irrigation" element={<IrrigationControl />} />
-
-
- 
         </Routes>
       </main>
     </div>
   );
 }
+
 
 export default function App() {
   return (

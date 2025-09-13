@@ -1,6 +1,6 @@
 const axios = require('axios');
 const config = require('../config/config');
-
+const fetch = require('node-fetch');
 class BlynkService {
   constructor() {
     this.baseURL = `https://${config.BLYNK_SERVER}/external/api`;
@@ -17,16 +17,16 @@ class BlynkService {
       v7: 'tankLevel',      // Water tank height (%)
       v8: 'pumpControl',    // OUTPUT - Send pump commands (0=Stop, 1=Start) to Arduino
       v9: 'targetMoisture' , // OUTPUT - Send target moisture percentage (1-100%)
-      // v10:'serverStatus' // OUTPUT - Server connection status (0=Disconnected, 1=Connected)
+      v10:'serverStatus' // OUTPUT - Server connection status (0=Disconnected, 1=Connected)
     };
   }
 
   async getSensorData() {
     try {
       // Get data from virtual pins (READ operations) - only input pins v0-v7
-      const [moisture1, moisture2, temperature, humidity, isRain, physicalBtn, pumpStatus, tankLevel] = await Promise.all([
+      const [moisture1, moisture2, temperature, humidity, isRain, physicalBtn, pumpStatus, tankLevel,serverStatus] = await Promise.all([
         this.getPin('v0'), this.getPin('v1'), this.getPin('v2'), this.getPin('v3'),
-        this.getPin('v4'), this.getPin('v5'), this.getPin('v6'), this.getPin('v7')
+        this.getPin('v4'), this.getPin('v5'), this.getPin('v6'), this.getPin('v7'),this.getPin('v10')
       ]);
 
       const timestamp = new Date().toISOString();
@@ -42,6 +42,7 @@ class BlynkService {
         tankLevel: parseFloat(tankLevel) || 0,
         pumpControl: 0,  // Output pin - default
         targetMoisture: 30,  // Output pin - default
+        serverStatus: parseInt(serverStatus) || 0,
         timestamp,
       };
     } catch (error) {
@@ -55,7 +56,7 @@ class BlynkService {
     try {
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${this.weatherAPIKey}&units=metric`,
-        { timeout: 10000 }
+        { timeout: 3000 }
       );
 
       return {
@@ -216,26 +217,58 @@ class BlynkService {
     }
   }
 
-  async checkDeviceConnection() {
-    try {
-      const response = await this.getPin('v0');
-      if (response !== null && response !== undefined) {
-        return {
-          status: 'online',
-          lastSeen: 'Just now',
-          message: 'Arduino Connected'
-        };
-      } else {
-        throw new Error('No data received from device');
+
+ 
+
+async  checkDeviceConnection() {
+  const accessToken = config.BLYNK_AUTH_TOKEN;
+  const region = 'blr1'; // fra1, blr1, etc.
+
+  const baseUrl = `https://${region}.blynk.cloud/external/api`;
+
+  try {
+    // First check if hardware is connected
+    const response = await fetch(`${baseUrl}/isHardwareConnected?token=${accessToken}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const text = await response.text();
+    const isConnected = text.trim() === "true";
+
+    if (isConnected) {
+      return {
+        status: 'online',
+        lastSeen: 'Just now',
+        message: 'Arduino Connected',
+        serverStatus: 1
+      };
+    } else {
+      // Fetch device info to get lastSeen
+      const infoRes = await fetch(`${baseUrl}/getDeviceInfo?token=${accessToken}`);
+      if (!infoRes.ok) {
+        throw new Error(`HTTP error! status: ${infoRes.status}`);
       }
-    } catch (error) {
+
+      const info = await infoRes.json();
+
       return {
         status: 'offline',
-        lastSeen: null,
-        message: 'Arduino Disconnected'
+        lastSeen: info.lastSeen ? new Date(info.lastSeen).toLocaleString() : null,
+        message: 'Arduino Disconnected',
+        serverStatus: 1
       };
     }
+  } catch (error) {
+    return {
+      status: 'offline',
+      lastSeen: null,
+      message: 'Blynk IoT Server Offline',
+      serverStatus: 0
+    };
   }
+}
+
 
   async getAverageMoisture() {
     try {

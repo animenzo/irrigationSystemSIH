@@ -1,7 +1,7 @@
 // components/Dashboard.jsx
 import React, { useState, useEffect } from "react";
-import { 
-  Cloud, CloudDrizzle, Sun, CloudSnow, Zap, 
+import {
+  Cloud, CloudDrizzle, Sun, CloudSnow, Zap,
   Droplets, Thermometer, Power, Calendar, RefreshCw,
   Play, AlertTriangle, Settings
 } from "lucide-react";
@@ -9,11 +9,23 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import { api } from '../services/api';
 
 const Dashboard = () => {
+
+
   const [dashboardData, setDashboardData] = useState({
-  sensors: {}, weather: {}, device: {}, alerts: []
+  sensors: {},
+  weather: {},
+  device: {
+    serverStatus: 0,
+    status: "offline",
+    lastSeen: null,
+    message: "Loading..."
+  },
+  alerts: []
 });
 
-  
+
+
+  const [mode, setMode] = useState("manual"); // "manual" or "ai"
   const [loading, setLoading] = useState(false);
   const [showPumpModal, setShowPumpModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -76,16 +88,17 @@ const Dashboard = () => {
   const handleFinalConfirm = async () => {
     try {
       setLoading(true);
+      setShowConfirmModal(false);
       const action = pumpAction === 'start';
       const moisture = pumpAction === 'start' ? targetMoisture : null;
-      
+
       await api.post('/blynk/pump/control', {
         action,
         targetMoisture: moisture,
         farmId: 'demo-farm-id'  // Dummy for demo
       });
-      
-      setShowConfirmModal(false);
+
+     
       // Update local state for immediate feedback
       setDashboardData(prev => ({
         ...prev,
@@ -95,10 +108,12 @@ const Dashboard = () => {
           targetMoisture: moisture || prev.sensors.targetMoisture
         }
       }));
-      
+       
+
       await fetchDashboardData(); // Refresh data from Arduino
     } catch (error) {
       console.error('Error controlling pump:', error);
+      
     } finally {
       setLoading(false);
     }
@@ -106,15 +121,15 @@ const Dashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-200">
       {/* ENHANCED HEADER WITH REAL WEATHER */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <Play className="w-4 h-4 text-white" />
+                <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                  <img src="/smartyFarm.svg" alt="" />
                 </div>
                 <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
               </div>
@@ -124,7 +139,7 @@ const Dashboard = () => {
                 <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">5 Acres</span>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               {/* LIVE WEATHER DISPLAY */}
               <div className="flex items-center space-x-2 text-sm text-gray-600 bg-blue-50 px-3 py-2 rounded-lg">
@@ -136,18 +151,27 @@ const Dashboard = () => {
                   {dashboardData.weather.description}
                 </span>
               </div>
-              
-             <div className="flex items-center space-x-2 text-sm">
-  <div className={`w-2 h-2 rounded-full ${
-    dashboardData.device.status === 'online' ? 'bg-green-500' : 'bg-red-500'
-  }`}></div>
+
+        <div className="flex items-center space-x-2 text-sm">
+  <div
+    className={`w-3 h-3 rounded-full ${
+      dashboardData.device.serverStatus === 1 ? "bg-green-500" : "bg-red-500"
+    }`}
+  ></div>
   <span className="text-gray-600">
-    {dashboardData.device.status === 'online' ? 'Server Online' : 'Server Offline'}
+    {dashboardData.device.serverStatus === 1
+      ? "Blynk Server Online"
+      : "Blynk Server Offline"}
+    {" - "}
+    Last Updated: {dashboardData.device.lastSeen || "N/A"}
   </span>
 </div>
 
-              
-              <button 
+
+
+
+
+              <button
                 onClick={() => window.location.reload()}
                 className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
                 disabled={loading}
@@ -159,18 +183,28 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* STATUS BAR WITH ALERTS */}
         <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center space-x-2 text-sm">
-            <div className={`w-3 h-3 rounded-full ${
-              dashboardData.device.status === 'online' ? 'bg-green-500' : 'bg-red-500'
-            }`}></div>
+          {/* <div className="flex items-center space-x-2 text-sm">
+            <div className={`w-3 h-3 rounded-full ${dashboardData.device.serverStatus === 1 ? 'bg-green-500' : 'bg-red-500'
+              }`}></div>
             <span className="text-gray-600">
-              {dashboardData.device.status === 'online' ? 'Server Online' : 'Server Offline'} - Last Updated: {dashboardData.device.lastSeen}
+              {dashboardData.device.serverStatus === 1 ? 'Server Online' : 'Server Offline'} - Last Updated: {dashboardData.device.lastSeen || 'N/A'}
             </span>
+          </div> */}
+
+          <div className="bg-white px-3 rounded-lg shadow flex items-center gap-2">
+            <div className="">
+              <CloudDrizzle className={`h-10 w-10 ${dashboardData.sensors.isRain ? 'text-blue-500' : 'text-gray-300'}`} />
+            </div>
+            <p className="text-2xl font-bold text-gray-800 ">
+              {dashboardData.sensors.isRain ? 'Yes' : 'No'}
+            </p>
+            <p className="text-lg font-medium text-gray-600">Rain</p>
+
           </div>
-          
+
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
               <AlertTriangle
@@ -194,20 +228,20 @@ const Dashboard = () => {
         </div>
 
         {/* MAIN DASHBOARD GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-3">
           {/* Water Tank */}
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">Water Tank</h3>
-            <div className="relative w-32 h-40 mx-auto mb-4">
+            <div className="relative w-40 h-50 mx-auto mb-4">
               <div className="w-full h-full border-4 border-green-400 rounded-lg relative overflow-hidden">
-                <div 
+                <div
                   className="absolute bottom-0 w-full bg-blue-500 transition-all duration-300"
                   style={{ height: `${dashboardData.sensors.tankLevel}%` }}
                 ></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center text-white font-bold">
+                  <div className="text-center text-zinc-600 font-bold">
                     <div className="text-2xl">{dashboardData.sensors.tankLevel}%</div>
-                    <div className="text-sm">150L</div>
+                    <div className="text-sm">{dashboardData.sensors.tankLevel}L</div>
                   </div>
                 </div>
               </div>
@@ -216,111 +250,188 @@ const Dashboard = () => {
 
           {/* Sensor Cards */}
           <div className="bg-white p-6 rounded-lg shadow text-center">
-            <div className="w-24 h-24 mx-auto mb-3 relative">
-              <svg width="96" height="96" className="transform -rotate-90">
-                <circle cx="48" cy="48" r="45" stroke="#E5E7EB" strokeWidth="6" fill="none" />
+            <div className="w-40 h-40 mx-auto mb-3 relative">
+              <svg width="160" height="160" className="transform -rotate-90">
+                {/* Background circle */}
                 <circle
-                  cx="48" cy="48" r="45" stroke="#10B981" strokeWidth="6" fill="none"
-                  strokeDasharray={283} strokeDashoffset={283 - (dashboardData.sensors.averageMoisture / 100 * 283)}
-                  strokeLinecap="round" className="transition-all duration-300"
+                  cx="80"
+                  cy="80"
+                  r="70"
+                  stroke="#E5E7EB"
+                  strokeWidth="10"
+                  fill="none"
+                />
+                {/* Progress circle */}
+                <circle
+                  cx="80"
+                  cy="80"
+                  r="70"
+                  stroke="#10B981"
+                  strokeWidth="10"
+                  fill="none"
+                  strokeDasharray={2 * Math.PI * 70} // 439.82
+                  strokeDashoffset={
+                    2 * Math.PI * 70 -
+                    (dashboardData.sensors.averageMoisture / 100) * (2 * Math.PI * 70)
+                  }
+                  strokeLinecap="round"
+                  className="transition-all duration-500"
                 />
               </svg>
+              {/* Percentage label */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xl font-bold text-gray-800">{dashboardData.sensors.averageMoisture}%</span>
+                <span className="text-2xl font-bold text-gray-800">
+                  {dashboardData.sensors.averageMoisture}%
+                </span>
               </div>
             </div>
             <div className="flex items-center justify-center mb-2">
-              <Droplets className="h-5 w-5 text-blue-500 mr-1" />
-              <span className="text-sm font-medium text-gray-600">Moisture</span>
+              <Droplets className="h-6 w-6 text-blue-500 mr-2" />
+              <span className="text-base font-medium text-gray-600">Moisture</span>
             </div>
-            <p className="text-xs text-gray-400">Target {dashboardData.sensors.targetMoisture}%</p>
+            <p className="text-sm text-gray-400">
+              Target {dashboardData.sensors.targetMoisture}%
+            </p>
           </div>
 
+          {/* Temperature Chart */}
           <div className="bg-white p-6 rounded-lg shadow text-center">
-            <div className="w-24 h-24 mx-auto mb-3 relative">
-              <svg width="96" height="96" className="transform -rotate-90">
-                <circle cx="48" cy="48" r="45" stroke="#E5E7EB" strokeWidth="6" fill="none" />
+            <div className="w-40 h-40 mx-auto mb-3 relative">
+              <svg width="160" height="160" className="transform -rotate-90">
+                <circle cx="80" cy="80" r="70" stroke="#E5E7EB" strokeWidth="10" fill="none" />
                 <circle
-                  cx="48" cy="48" r="45" stroke="#F59E0B" strokeWidth="6" fill="none"
-                  strokeDasharray={283} strokeDashoffset={283 - (dashboardData.sensors.temperature / 50 * 283)}
-                  strokeLinecap="round" className="transition-all duration-300"
+                  cx="80" cy="80" r="70"
+                  stroke="#F59E0B" strokeWidth="10" fill="none"
+                  strokeDasharray={2 * Math.PI * 70} // ~439.82
+                  strokeDashoffset={
+                    2 * Math.PI * 70 - (dashboardData.sensors.temperature / 50) * (2 * Math.PI * 70)
+                  }
+                  strokeLinecap="round"
+                  className="transition-all duration-500"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xl font-bold text-gray-800">{dashboardData.sensors.temperature}°C</span>
+                <span className="text-2xl font-bold text-gray-800">
+                  {dashboardData.sensors.temperature}°C
+                </span>
               </div>
             </div>
             <div className="flex items-center justify-center mb-2">
-              <Thermometer className="h-5 w-5 text-orange-500 mr-1" />
-              <span className="text-sm font-medium text-gray-600">Temperature</span>
+              <Thermometer className="h-6 w-6 text-orange-500 mr-2" />
+              <span className="text-base font-medium text-gray-600">Temperature</span>
             </div>
           </div>
 
+          {/* Humidity Chart */}
           <div className="bg-white p-6 rounded-lg shadow text-center">
-            <div className="w-24 h-24 mx-auto mb-3 relative">
-              <svg width="96" height="96" className="transform -rotate-90">
-                <circle cx="48" cy="48" r="45" stroke="#E5E7EB" strokeWidth="6" fill="none" />
+            <div className="w-40 h-40 mx-auto mb-3 relative">
+              <svg width="160" height="160" className="transform -rotate-90">
+                <circle cx="80" cy="80" r="70" stroke="#E5E7EB" strokeWidth="10" fill="none" />
                 <circle
-                  cx="48" cy="48" r="45" stroke="#3B82F6" strokeWidth="6" fill="none"
-                  strokeDasharray={283} strokeDashoffset={283 - (dashboardData.sensors.humidity / 100 * 283)}
-                  strokeLinecap="round" className="transition-all duration-300"
+                  cx="80" cy="80" r="70"
+                  stroke="#3B82F6" strokeWidth="10" fill="none"
+                  strokeDasharray={2 * Math.PI * 70}
+                  strokeDashoffset={
+                    2 * Math.PI * 70 - (dashboardData.sensors.humidity / 100) * (2 * Math.PI * 70)
+                  }
+                  strokeLinecap="round"
+                  className="transition-all duration-500"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xl font-bold text-gray-800">{dashboardData.sensors.humidity}%</span>
+                <span className="text-2xl font-bold text-gray-800">
+                  {dashboardData.sensors.humidity}%
+                </span>
               </div>
             </div>
             <div className="flex items-center justify-center mb-2">
-              <CloudDrizzle className="h-5 w-5 text-green-500 mr-1" />
-              <span className="text-sm font-medium text-gray-600">Humidity</span>
+              <CloudDrizzle className="h-6 w-6 text-green-500 mr-2" />
+              <span className="text-base font-medium text-gray-600">Humidity</span>
             </div>
           </div>
+
         </div>
 
         {/* ENHANCED PUMP CONTROL SECTION */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Pump Status */}
           <div className="bg-white p-6 rounded-lg shadow">
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="text-center">
-                <Power className="h-6 w-6 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-600 mb-2">Physical Switch</p>
-                <p className="text-lg font-semibold">Pump {dashboardData.sensors.physicalBtn ? 'On' : 'Off'}</p>
-                <div className={`w-4 h-4 ${dashboardData.sensors.physicalBtn ? 'bg-green-500' : 'bg-red-500'} rounded-full mx-auto mt-2`}></div>
+             <p className="text-xl text-gray-800 text-center font-bold">Status</p>
+            <div className="grid grid-cols-2 gap-4 ">
+              <div className="text-center ">
+                {/* <Power className="h-6 w-6 text-gray-400 mx-auto mb-2" />
+                <p className="text-sm text-gray-600 mb-2">Physical Switch</p> */}
+                <p className=" mb-2 mt-2 text-lg font-semibold">Physical Switch</p> 
+               
+                
+                <div className={`w-8 h-8 ${dashboardData.sensors.physicalBtn ? 'bg-green-500' : 'bg-red-500'} rounded-full mx-auto mt-2`}></div>
+                <p className=" text-sm text-gray-700 font-semibold">{dashboardData.sensors.physicalBtn ? 'On' : 'Off'}</p>
               </div>
               <div className="text-center">
-                <Power className="h-6 w-6 text-green-500 mx-auto mb-2" />
-                <p className="text-sm text-gray-600 mb-2">Automatic Switch</p>
-                <p className="text-lg font-semibold">{dashboardData.sensors.pumpStatus ? 'Running' : 'Stopped'}</p>
-                <div className={`w-4 h-4 ${dashboardData.sensors.pumpStatus ? 'bg-green-500' : 'bg-gray-400'} rounded-full mx-auto mt-2`}></div>
+                {/* <Power className="h-6 w-6 text-green-500 mx-auto mb-2" />
+                <p className="text-sm text-gray-600 mb-2">Automatic Switch</p> */}
+                <p className="text-lg mt-2 font-semibold text-gray-800 mb-2">Pump</p> 
+                
+                <div className={`w-8 h-8 ${dashboardData.sensors.pumpStatus ? 'bg-green-500' : 'bg-gray-400'} rounded-full mx-auto mt-2`}></div>
+                <p className="text-sm  font-semibold">{dashboardData.sensors.pumpStatus ? 'Running' : 'Stopped'}</p>
               </div>
             </div>
           </div>
 
           {/* ENHANCED Pump Control with Switch */}
           <div className="bg-white p-6 rounded-lg shadow">
-            <div className="flex items-center justify-center mb-4">
+            {/* <div className="flex items-center justify-center mb-4">
               <Power className={`h-8 w-8 ${dashboardData.sensors.pumpStatus ? 'text-green-500' : 'text-gray-400'}`} />
-            </div>
+            </div> */}
             <h3 className="text-lg font-semibold text-center mb-4">Pump Control</h3>
-            
+
             {/* Pump Switch */}
-            <div className="flex items-center justify-center mb-4">
+            {/* Mode Toggle Switch */}
+            {/* Mode Toggle (Manual / AI Controlled) */}
+            <div className="flex items-center justify-center mb-6">
+              <div
+                onClick={() => setMode(mode === "manual" ? "ai" : "manual")}
+                className="relative w-56 h-10 bg-gray-200 rounded-full cursor-pointer flex items-center"
+              >
+                {/* Sliding Knob */}
+                <div
+                  className={`absolute top-0 left-0 h-10 w-1/2 rounded-full transition-all duration-300 ${mode === "manual"
+                      ? "translate-x-0 bg-blue-600"
+                      : "translate-x-full bg-purple-600"
+                    }`}
+                ></div>
+
+                {/* Labels */}
+                <div className="w-1/2 text-center z-10 text-sm font-medium">
+                  <span className={mode === "manual" ? "text-white" : "text-gray-700"}>
+                    Manual
+                  </span>
+                </div>
+                <div className="w-1/2 text-center z-10 text-sm font-medium">
+                  <span className={mode === "ai" ? "text-white" : "text-gray-700"}>
+                    AI Controlled
+                  </span>
+                </div>
+              </div>
+            </div>
+
+
+            {mode !== 'ai' && <div className="flex items-center justify-center mb-4" >
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   checked={dashboardData.sensors.pumpControl}
                   onChange={handlePumpToggle}
                   className="sr-only peer"
-                  disabled={loading}
+                  disabled={loading || mode === "ai"} // disable if AI controls it
                 />
-                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <div className="relative w-15 h-8 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute  after:bg-white after:border-gray-300 after:border after:rounded-full after:h-8 after:w-8 after:transition-all peer-checked:bg-blue-600"></div>
               </label>
               <span className="ml-3 text-sm font-medium text-gray-900">
                 {dashboardData.sensors.pumpStatus ? 'Pump ON' : 'Pump OFF'}
               </span>
-            </div>
-            
+            </div>}
+
             {/* Target Moisture for Start */}
             {dashboardData.sensors.pumpStatus && (
               <div className="mb-4">
@@ -342,7 +453,7 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-            
+
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 Status: {dashboardData.sensors.pumpStatus ? 'Running' : 'Stopped'}
@@ -363,16 +474,6 @@ const Dashboard = () => {
               </button>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow text-center">
-              <div className="flex items-center justify-center mb-4">
-                <CloudDrizzle className={`h-12 w-12 ${dashboardData.sensors.isRain ? 'text-blue-500' : 'text-gray-300'}`} />
-              </div>
-              <p className="text-3xl font-bold text-gray-800 mb-2">
-                {dashboardData.sensors.isRain ? 'Yes' : 'No'}
-              </p>
-              <p className="text-sm font-medium text-gray-600">Rain</p>
-              <p className="text-xs text-gray-400 mt-1">Local sensor</p>
-            </div>
           </div>
         </div>
       </div>
@@ -409,7 +510,7 @@ const Dashboard = () => {
               <span>Wet (80%)</span>
             </div>
           </div>
-          
+
           <div className="bg-blue-50 p-3 rounded-lg">
             <p className="text-sm text-blue-800">
               💧 Irrigation will run until soil moisture reaches {targetMoisture}%
@@ -420,11 +521,12 @@ const Dashboard = () => {
           </div>
         </div>
       </ConfirmationModal>
-    
+
       <ConfirmationModal
         isOpen={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
         onConfirm={handleFinalConfirm}
+
         title={pumpAction === 'start' ? "Confirm Start Pump" : "Confirm Stop Pump"}
         type={pumpAction === 'start' ? "default" : "warning"}
         message={pumpAction === 'start'
@@ -432,42 +534,53 @@ const Dashboard = () => {
           : "Are you sure you want to stop the pump?"
         }
       />
-    </div>
-  );
-
-  // Alerts Modal
-  if (showAlertsModal && dashboardData.alerts.length > 0) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Warnings</h3>
+      {showAlertsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Warnings</h3>
+              <button
+                onClick={() => setShowAlertsModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <ul className="space-y-2">
+              {dashboardData.alerts.map((alert, index) => (
+                <li
+                  key={index}
+                  className="text-sm text-orange-800 bg-orange-50 p-2 rounded"
+                >
+                  {alert}
+                </li>
+              ))}
+            </ul>
             <button
               onClick={() => setShowAlertsModal(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              Close
             </button>
           </div>
-          <ul className="space-y-2">
-            {dashboardData.alerts.map((alert, index) => (
-              <li key={index} className="text-sm text-orange-800 bg-orange-50 p-2 rounded">
-                {alert}
-              </li>
-            ))}
-          </ul>
-          <button
-            onClick={() => setShowAlertsModal(false)}
-            className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-          >
-            Close
-          </button>
         </div>
-      </div>
-    );
-  }
+      )}
+    </div>
+  )
+
+
 };
 
 export default Dashboard;

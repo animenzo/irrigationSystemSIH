@@ -384,6 +384,7 @@ app.post('/api/blynk/setTargetMoisture', async (req, res) => {
   }
 });
 
+
 app.get('/api/blynk/deviceStatus', async (req, res) => {
   try {
     const status = await blynkService.checkDeviceConnection();
