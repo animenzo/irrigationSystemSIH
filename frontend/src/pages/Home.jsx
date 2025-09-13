@@ -143,7 +143,7 @@ const style = {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className=" py-16 px-6 lg:px-20 text-center bg-white " 
+          className=" py-16 px-6 lg:px-20 text-center mt-24 bg-zinc-800/60 backdrop-blur-md" 
         >
           <h2 className="text-3xl font-bold text-gray-900 mb-8">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { scheduleService } from "@/services/api";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 const ScheduleContext = createContext();
 
@@ -32,7 +33,8 @@ export function ScheduleProvider({ children }) {
     return `${dayName} ${timeStr}`;
   };
 
-  const fetchSchedules = async (farmId = null) => {
+  // ✅ Use useCallback to memoize fetchSchedules function
+  const fetchSchedules = useCallback(async (farmId = null) => {
     setLoading(true);
     setError(null);
     try {
@@ -49,7 +51,7 @@ export function ScheduleProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // Empty dependency array since it doesn't depend on any props/state
 
   const createSchedule = async (scheduleData) => {
     setLoading(true);
@@ -97,12 +99,21 @@ export function ScheduleProvider({ children }) {
     }
   };
 
+  // ✅ Run only once on mount
   useEffect(() => {
     fetchSchedules();
-  }, []);
+  }, []); // Empty dependency array
 
   return (
-    <ScheduleContext.Provider value={{ schedules, loading, error, createSchedule, updateSchedule, deleteSchedule, fetchSchedules }}>
+    <ScheduleContext.Provider value={{ 
+      schedules, 
+      loading, 
+      error, 
+      createSchedule, 
+      updateSchedule, 
+      deleteSchedule, 
+      fetchSchedules 
+    }}>
       {children}
     </ScheduleContext.Provider>
   );

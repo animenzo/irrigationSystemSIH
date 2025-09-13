@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSchedules } from '../contexts/ScheduleContext';
+console.log('useSchedules function:', useSchedules);
 
 const dayShorts = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const dayFull = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -9,9 +10,9 @@ export default function Schedules() {
   const { schedules, loading, error, deleteSchedule, fetchSchedules } = useSchedules();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchSchedules();
-  }, [fetchSchedules]);
+  // useEffect(() => {
+  //   fetchSchedules();
+  // }, [fetchSchedules]);
 
   // Calculations for stats
   const total = schedules.length;
