@@ -5,7 +5,7 @@ import { useSchedules } from "../contexts/ScheduleContext";
 const daysOfWeek = ['M','T','W','T','F','S','S'];
 
 export default function ScheduleEdit() {
-  const { schedules, editSchedule } = useSchedules();
+  const { schedules, updateSchedule } = useSchedules();
   const { id } = useParams();
   const navigate = useNavigate();
   const sched = schedules.find(s => s._id === id);
@@ -63,7 +63,7 @@ export default function ScheduleEdit() {
           </div>
         </div>
         <input name="notes" value={form.notes} onChange={handleChange} className="border rounded px-3 py-2 w-full" placeholder="Notes"/>
-        <button type="submit" disabled={loading} className="w-full bg-green-700 text-white py-2 rounded mt-3">Save Changes</button>
+        <button type="submit"  className="w-full bg-green-700 text-white py-2 rounded mt-3">Save Changes</button>
       </form>
     </div>
   );

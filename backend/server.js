@@ -86,11 +86,15 @@ app.get('/api/schedules', async (req, res) => {
     const { farmId } = req.query;
     let query = {};
     if (farmId) {
+      if (!mongoose.Types.ObjectId.isValid(farmId)) {
+        return res.status(400).json({ error: 'Invalid farmId' });
+      }
       query.farmId = farmId;
     }
     const schedules = await Schedule.find(query).populate('farmId', 'name');
     res.json(schedules);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -47,7 +47,7 @@ const style = {
           <div className="bg-yellow-400 p-2 rounded-md shadow-md">
             <img src="/logo.png" alt="logo" className="h-6 w-6" />
           </div>
-          <span className="text-white font-semibold tracking-wide">AgroSmart</span>
+          <span className="text-white font-semibold tracking-wide">Smart-Kheti</span>
         </motion.div>
 
         <nav className="hidden md:flex space-x-6 text-white font-medium">
