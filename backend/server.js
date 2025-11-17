@@ -456,6 +456,10 @@ app.post('/api/blynk/pump/control', async (req, res) => {
     }
   });
 
+  app.get('/',(req,res)=>{
+    res.send("Hello server")
+  })
+
   app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`);
   });
