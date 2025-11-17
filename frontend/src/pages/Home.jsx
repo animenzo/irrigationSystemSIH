@@ -44,8 +44,8 @@ const style = {
           transition={{ delay: 0.4, type: "spring" }}
           className="flex items-center space-x-3"
         >
-          <div className="bg-yellow-400 p-2 rounded-md shadow-md">
-            <img src="/logo.png" alt="logo" className="h-6 w-6" />
+          <div className="bg-white-400  rounded-md shadow-md">
+            <img src="/logo.svg" alt="logo" className="h-8 w-8" />
           </div>
           <span className="text-white font-semibold tracking-wide">Smart-Kheti</span>
         </motion.div>

@@ -1,3 +1,0 @@
-ok now lets do the backend with step by step in which data will be coming from blinkiot api (arduino) that reflects the data on frontend that i made
-
-where do i get farmId from
