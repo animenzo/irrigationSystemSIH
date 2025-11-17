@@ -50,8 +50,8 @@ A web-based smart irrigation system that allows farmers to **monitor, manage, an
 
 ### **1. Clone the Repository**
 ```bash
-git clone https://github.com/your-username/smart-irrigation.git
-cd smart-irrigation
+git clone https://github.com/your-username/irrigationSystemSIH.git
+cd irrigationSystemSIH
 ```
 
 ---
@@ -65,10 +65,12 @@ npm install
 ```
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
+BLYNK_API=your_blynk_iot_api_key
+WEATHER_API=your_openWeatherApp_key
 ```
 - Start the backend server:
 ```bash
-npm start
+npm run dev
 ```
 
 ---
@@ -84,13 +86,13 @@ REACT_APP_BACKEND_URL=http://localhost:5000
 ```
 - Start the frontend:
 ```bash
-npm start
+node server.js
 ```
 
 ---
 
 ### **4. Access the App**
-- Frontend: `http://localhost:3000`
+- Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:5000/api`
 
 ---
@@ -123,8 +125,8 @@ irrigation2/
 
 ## Future Enhancements
 - Weather-based automatic irrigation
-- IoT sensor integration
-- Push notifications for farmers
+- AI Controlling
+- scheduled based integration
 - Multi-language support
 
 ---
