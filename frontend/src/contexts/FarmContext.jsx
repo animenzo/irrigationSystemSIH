@@ -12,6 +12,7 @@ export function FarmProvider({ children }) {
     useEffect(() => {
         fetchFarms();
     }, []);
+    
 
     const fetchFarms = async () => {
         setLoading(true);

@@ -12,9 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { format } from 'date-fns';
 
 
-
-
-
 const Dashboard = () => {
   const { schedules } = useSchedules();
   console.log("Schedules:", schedules);

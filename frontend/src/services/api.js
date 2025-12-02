@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const API_BASE_URL = 'http://localhost:5000/api';
-const API_BASE_URL = 'https://irrigation-system-sih.vercel.app/'
+const API_BASE_URL = 'https://irrigation-system-sih.vercel.app/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -13,7 +13,7 @@ export { api };
 export const farmService = {
   async getAllFarms() {
     try {
-      const response = await api.get('/farms');
+      const response = await api.get(`${API_BASE_URL}/farms`);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.error || 'Failed to fetch farms');
