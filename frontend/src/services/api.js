@@ -13,7 +13,7 @@ export { api };
 export const farmService = {
   async getAllFarms() {
     try {
-      const response = await api.get(`${API_BASE_URL}/farms`);
+      const response = await api.get(`/farms`);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.error || 'Failed to fetch farms');

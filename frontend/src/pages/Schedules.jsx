@@ -31,16 +31,7 @@ const useSchedules = () => {
           days: [true, true, true, true, true, true, true],
           nextRun: "Tomorrow, 06:00"
         },
-        {
-          _id: "2",
-          name: "Evening Mist",
-          zone: "Zone B - Orchard",
-          status: "Paused",
-          time: "18:30",
-          duration: 20,
-          days: [false, true, false, true, false, true, false],
-          nextRun: "Thursday, 18:30"
-        }
+     
       ];
       setSchedules(backendData);
     } catch (err) {
