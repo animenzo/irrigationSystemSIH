@@ -194,7 +194,9 @@ export default function Sensors() {
             </h1>
             <p className="text-zinc-500 text-sm mt-1">Real-time telemetry from deployed field units.</p>
           </div>
-          
+          <span className="block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20  text-red-200 text-sm font-semibold tracking-widest mb-1">
+              <p>Note: This section is under development.</p>
+            </span>
           <button 
             onClick={() => navigate("/sensors/add")}
             className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-[0_0_20px_rgba(34,197,94,0.2)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)] transition-all group"

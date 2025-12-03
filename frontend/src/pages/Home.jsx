@@ -18,7 +18,8 @@ import {
   Star,
   MapPin,
   ThermometerSun,
-  Activity
+  Activity,
+  TriangleAlert
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
@@ -35,7 +36,8 @@ const Navbar = ({ isScrolled }) => {
     { name: "DASHBOARD", path: "/dashboard" },
     { name: "FARMS", path: "/farms" },
     { name: "WEATHER", path: "/weather" },
-    { name: "SENSORS", path: "/sensors" }
+    { name: "SENSORS", path: "/sensors" },
+
   ];
 
   const isActive = (path) => {
@@ -245,13 +247,22 @@ const LandingPage = ({ onNavigate }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-zinc-950/30" />
           <div className="absolute inset-0 bg-black/40" />
         </div>
-
+          <div>
+            
+          </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center mt-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
+             <span className="block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20  text-red-200 text-sm font-semibold tracking-widest mb-1">
+              <p>Note: You have to Connect IoT Device to see the data and functionalities in Dashboard and all other pages.</p>
+            </span>
+             <span className="block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20  text-red-200 text-sm font-semibold tracking-widest mb-4">
+              <p>Note: This website is still in development. Some features may not work as expected.</p>
+            </span>
+            
             <span className="inline-block py-1 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-semibold tracking-widest mb-6">
               THE FUTURE OF AGRICULTURE
             </span>
@@ -267,18 +278,19 @@ const LandingPage = ({ onNavigate }) => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onNavigate('dashboard')}
-                className="px-8 py-4 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2"
+              <Link 
+                to="/login"
+                onClick={() => onNavigate('')}
+                className="px-8 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg shadow-lg shadow-emerald-500/20 transition-all flex items-center hover:scale-105 hover: gap-2 cursor-pointer"
               >
                 Start Your Journey <ArrowRight size={20} />
-              </motion.button>
+              </Link>
               <motion.button
                 whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 rounded-full border border-zinc-600 text-white font-semibold hover:border-emerald-500 transition-all flex items-center gap-2"
+                className="px-8 py-4 rounded-full border border-zinc-600 text-white font-semibold hover:border-emerald-500 transition-all flex items-center gap-2 cursor-pointer"
+                 onClick={() => window.open("https://youtu.be/1Mz3P98ETB0", "_blank")}
+
               >
                 <Play size={18} fill="currentColor" /> Watch Demo
               </motion.button>

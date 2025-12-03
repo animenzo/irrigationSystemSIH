@@ -39,7 +39,7 @@ const useSettings = () => {
           calibrationDate: "2024-03-15",
           pumpThreshold: 30, // %
           sensorInterval: 15, // minutes
-          firmwareVersion: "v2.4.1"
+          firmwareVersion: ""
         }
       });
       setLoading(false);
@@ -157,7 +157,9 @@ const Settings = () => {
            </div>
            
            <div className="flex items-center gap-4">
-              <span className="hidden sm:inline-block text-xs font-mono text-zinc-500">v2.4.0-stable</span>
+              <span className="block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20  text-red-200 text-sm font-semibold tracking-widest mb-1">
+              <p>Note: This section is under development.</p>
+            </span>
               <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 border border-green-500/30 font-bold text-xs">
                 {user.profile.firstName[0]}{user.profile.lastName[0]}
               </div>

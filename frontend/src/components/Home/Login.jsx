@@ -40,11 +40,15 @@ function App() {
           @keyframes show { 0%, 49.99% { opacity: 0; z-index: 1; } 50%, 100% { opacity: 1; z-index: 5; } }
         `}
       </style>
+      <span className="block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20  text-red-500 text-sm font-semibold tracking-widest mb-1">
+              <p>Note: This section is under development.</p>
+            </span>
       <div
         className={`bg-white rounded-2xl md:rounded-xl shadow-xl md:shadow-2xl relative overflow-hidden w-full max-w-[400px] md:max-w-[768px] min-h-[600px] md:min-h-[480px] transition-all duration-300 ${
           isRightPanelActive ? 'right-panel-active' : ''
         }`}
       >
+        
         {/* Sign Up Form */}
         <div
           className={`form-container sign-up-container absolute top-0 h-full transition-all duration-600 ease-in-out left-0 w-full md:w-1/2 flex items-center justify-center 

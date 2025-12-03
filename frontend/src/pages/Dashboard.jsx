@@ -251,7 +251,11 @@ const Dashboard = () => {
               {dashboardData.sensors.isRain ? 'Yes' : 'No'}
             </p>
             <p className="text-sm sm:text-base md:text-lg font-medium text-cyan-500">Rain</p>
+             
           </div>
+          <span className="block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20  text-red-200 text-sm font-semibold tracking-widest mb-1">
+              <p>Note: You have to Connect IoT Device to see the data and functionalities in Dashboard and all other pages.</p>
+            </span>
 
           {/* Alerts */}
           <div className="flex items-center space-x-3 sm:space-x-6">

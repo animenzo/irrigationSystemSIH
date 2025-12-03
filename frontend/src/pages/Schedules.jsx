@@ -217,7 +217,9 @@ export default function Schedules() {
             </h1>
             <p className="text-zinc-500 text-sm mt-1">Manage automated irrigation timers and zones.</p>
           </div>
-          
+          <span className="block py-1 px-3 rounded-full bg-red-500/10 border border-red-500/20  text-red-200 text-sm font-semibold tracking-widest mb-1">
+              <p>Note: This section is under development.</p>
+            </span>
           <div className="flex items-center gap-3">
              <div className="relative hidden sm:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
