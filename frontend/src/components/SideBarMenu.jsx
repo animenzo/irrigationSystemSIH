@@ -83,7 +83,7 @@ export default function SideBarMenu({ isOpen, setIsOpen }) {
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold text-white tracking-tight leading-none group-hover:text-green-400 transition-colors">
-                Smart<span className="text-green-500">Kheti</span>
+                Crop<span className="text-green-500">Sense</span>
               </span>
               
             </div>

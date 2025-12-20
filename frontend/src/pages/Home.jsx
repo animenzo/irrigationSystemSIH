@@ -63,7 +63,7 @@ const Navbar = ({ isScrolled }) => {
               <Sprout size={24} />
             </div>
             <span className="text-xl font-bold tracking-wide text-white">
-              Smart<span className="text-emerald-500">Kheti</span>
+              Crop<span className="text-emerald-500">Sense</span>
             </span>
           </motion.div>
         </Link>
@@ -199,7 +199,7 @@ const LandingPage = ({ onNavigate }) => {
         {
           name: "Rajesh Kumar",
           role: "Wheat Farmer, Punjab",
-          content: "Since using SmartKheti, my water usage dropped by 40% while my yield increased. The automated irrigation is a lifesaver.",
+          content: "Since using CropSense, my water usage dropped by 40% while my yield increased. The automated irrigation is a lifesaver.",
           image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop"
         },
         {
@@ -217,7 +217,7 @@ const LandingPage = ({ onNavigate }) => {
         {
           name: "Anita Desai",
           role: "Cotton Farmer, Gujarat",
-          content: "SmartKheti's insights helped me optimize my fertilizer usage, saving costs and protecting the soil.",
+          content: "Crop-Sense's insights helped me optimize my fertilizer usage, saving costs and protecting the soil.",
           image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop"
         },
          {
