@@ -377,7 +377,7 @@ const LandingPage = ({ onNavigate }) => {
               <span className="text-emerald-500">Modern Farmer</span>
             </h2>
             <p className="text-zinc-400 text-lg leading-relaxed">
-              Farming isn't just a job; it's a science. Smart-Kheti bridges the gap between traditional wisdom and modern technology.
+              Farming isn't just a job; it's a science.Crop-Sense bridges the gap between traditional wisdom and modern technology.
             </p>
             
             <div className="space-y-4">
@@ -527,7 +527,7 @@ const LandingPage = ({ onNavigate }) => {
                 <a href="#" className="p-2 rounded-full bg-zinc-900 text-zinc-400 hover:bg-emerald-600 hover:text-white transition-all"><Linkedin size={18} /></a>
                 <a href="#" className="p-2 rounded-full bg-zinc-900 text-zinc-400 hover:bg-emerald-600 hover:text-white transition-all"><Instagram size={18} /></a>
               </div>
-              <p className="text-zinc-600 text-xs">© {new Date().getFullYear()} Smart-Kheti Inc.</p>
+              <p className="text-zinc-600 text-xs">© {new Date().getFullYear()} Crop-Sense Inc.</p>
             </div>
           </div>
         </div>
